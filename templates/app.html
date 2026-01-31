@@ -15,7 +15,6 @@
 <header class="bg-white border-b sticky top-0 z-50">
     <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" class="text-xl font-bold text-[#006adb]">Dinta</a>
-        <span class="text-sm text-gray-500">AI Decision Architect</span>
     </div>
 </header>
 
@@ -39,7 +38,7 @@
             <div>
                 <label class="block font-semibold mb-2 text-sm text-gray-700">Framework Preference</label>
                 <select id="framework" class="w-full border rounded-lg p-3 h-24 bg-white focus:ring-2 focus:ring-[#006adb] focus:outline-none">
-                    <option value="auto">✨ Auto-Detect (Recommended)</option>
+                    <option value="auto">Auto-Detect (Recommended)</option>
                     <option value="SWOT">SWOT Analysis</option>
                     <option value="FIRST_PRINCIPLES">First Principles</option>
                     <option value="COST_BENEFIT">Cost-Benefit Analysis</option>
@@ -184,6 +183,29 @@ function renderResults(data) {
 function scrollToInput() {
     document.getElementById('input-section').scrollIntoView({behavior: 'smooth'});
     document.getElementById('problem').focus();
+}
+// fixes issues with resets
+async function generateStrategy() {
+    // 1. CLEAR THE PREVIOUS DATA IMMEDIATELY
+    document.getElementById('solution-text').innerText = "Analyzing...";
+    document.getElementById('execution-steps').innerHTML = ""; 
+    document.getElementById('framework-grid').innerHTML = ""; // Clear the SWOT/RICE grid
+
+    // 2. GATHER NEW DATA
+    const problem = document.getElementById('problem-input').value;
+    const framework = document.getElementById('framework-select').value;
+
+    // 3. TRIGGER THE API CALL
+    const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem, framework })
+    });
+
+    const data = await response.json();
+
+    // 4. RENDER NEW DATA
+    renderResults(data);
 }
 </script>
 
