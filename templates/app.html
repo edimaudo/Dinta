@@ -1,120 +1,135 @@
-
-{% set app_id = app_id %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <title>Dinta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinta — Strategic Decision Intelligence</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <script>
-        const __app_id = `{{ app_id }}`;
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        /* (kept the same styles from your original file to preserve look-and-feel) */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
-        :root {
-            --elevate-1: rgba(0,0,0, .03);
-            --elevate-2: rgba(0,0,0, .08);
-            --background: hsl(0 0% 100%);
-            --foreground: hsl(220 13% 13%);
-            --border: hsl(220 13% 88%);
-            --card: hsl(220 13% 98%);
-            --card-foreground: hsl(220 13% 13%);
-            --card-border: hsl(220 13% 93%);
-            --primary: hsl(211 100% 43%);
-            --primary-foreground: hsl(0 0% 100%);
-            --muted: hsl(220 13% 96%);
-            --muted-foreground: hsl(220 13% 45%);
-        }
-        /* ...the rest of the CSS (identical to the original file) was preserved for fidelity */
-        /* For brevity in this listing I keep the same CSS from your source; in your repo please keep the full CSS block */
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen bg-background font-sans text-foreground">
-    <div id="app-root"></div>
-    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
 
-    <!-- The full original JavaScript app is preserved here. Only the app label and references updated from "DAID" to "Dinta". -->
-    <script>
-        // --- 1. GLOBAL STATE & CONSTANTS ---
-        const STEPS = [
-            { id: 1, label: "Problem", component: 'renderProblemStep' },
-            { id: 2, label: "Assumptions", component: 'renderAssumptionStep' },
-            { id: 3, label: "Frameworks", component: 'renderFrameworkStep' },
-            { id: 4, label: "Results", component: 'renderResultsStep' },
-        ];
+<body class="bg-gray-50 text-gray-900 min-h-screen">
 
-        const FRAMEWORKS = [
-            /* (kept full framework list from your original file) */
-            { id: "swot", name: "SWOT Analysis", description: "Evaluate Strengths, Weaknesses, Opportunities, and Threats" },
-            { id: "porter-five-forces", name: "Porter's Five Forces", description: "Assess competitive dynamics and market forces" },
-            { id: "first-principles", name: "First Principles", description: "Break down complex problems to fundamental truths" },
-            /* ... rest of frameworks preserved ... */
-        ];
+<header class="bg-white border-b">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <h1 class="text-xl font-bold text-[#006adb]">Dinta</h1>
+        <a href="/" class="text-sm text-gray-600 hover:underline">Home</a>
+    </div>
+</header>
 
-        const PROBLEM_CATEGORIES = [
-            { value: "business", label: "Business" },
-            { value: "operational", label: "Operational" },
-            { value: "research", label: "Research" },
-            { value: "personal", label: "Personal" },
-        ];
+<main class="max-w-4xl mx-auto px-6 py-12">
 
-        const SYSTEM_PROMPT = `
-            You are the Decision & Action Intelligence Designer (Dinta), an AI dedicated to providing the best strategic advice possible.
-            Your goal is to ensure the user makes a smart decision based on their Problem Statement and Assumptions.
-            You will be provided with:
-            1. A Problem Statement.
-            2. A list of Assumptions.
-            3. A specific Framework to apply (OR you will be asked to select the best ones).
+    <h2 class="text-3xl font-extrabold mb-8">
+        Strategic Decision Intelligence
+    </h2>
 
-            Format the output STRICTLY as a JSON object with the following structure:
-            {
-              "analyses": [
-                {
-                  "framework_name": "Name of the Framework",
-                  "why_selected": "A clear explanation of why this framework is appropriate for this specific problem.",
-                  "decision": "The core decision or recommendation derived from applying this framework.",
-                  "sections": [
-                    {
-                      "title": "Section Title (e.g., Analysis, Key Factors, Risks)",
-                      "insights": [
-                        "Insight 1",
-                        "Insight 2"
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-        `;
+    <!-- Problem -->
+    <div class="mb-6">
+        <label class="block font-semibold mb-2">Problem Statement</label>
+        <textarea id="problem"
+            class="w-full border rounded-md p-4 h-32"
+            placeholder="Describe the problem you want to solve..."></textarea>
+    </div>
 
-        window.appState = {
-            currentStep: 0,
-            problemStatement: "",
-            selectedCategories: [],
-            assumptions: [],
-            frameworkSelectionMode: 'auto',
-            selectedFrameworks: [],
-            analysisResults: [],
-            isLoading: false,
-            progress: 0,
-            currentFramework: null,
-            userId: 'anonymous-user',
-        };
+    <!-- Assumptions -->
+    <div class="mb-6">
+        <label class="block font-semibold mb-2">Assumptions (optional)</label>
+        <textarea id="assumptions"
+            class="w-full border rounded-md p-4 h-24"
+            placeholder="List any assumptions..."></textarea>
+    </div>
 
-        // (The JavaScript logic in your original file is preserved unchanged; it expects endpoints below)
-        // ...
-        // For brevity in this message: the rest of the JS is the same as your uploaded file (state management,
-        // UI render functions, callGeminiProxy, fetchAutoAnalysis/fetchManualAnalysis, handleNext, etc.)
-        // This ensures that the client-side expects and calls the endpoints:
-        //   POST /api/gemini-proxy
-        //   POST /api/generate_analysis
-        // All of which are implemented in app.py below.
-    </script>
+    <!-- Framework -->
+    <div class="mb-6">
+        <label class="block font-semibold mb-2">Framework</label>
+        <select id="framework" class="border rounded-md p-2">
+            <option value="auto">Let Dinta choose</option>
+            <option value="SWOT">SWOT</option>
+            <option value="FIRST_PRINCIPLES">First Principles</option>
+            <option value="COST_BENEFIT">Cost Benefit</option>
+        </select>
+    </div>
+
+    <button onclick="runAnalysis()"
+        class="bg-[#006adb] text-white px-6 py-3 rounded-md font-semibold">
+        Run Analysis
+    </button>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden mt-6 text-[#006adb] font-semibold">
+        Analyzing with IBM watsonx Orchestrate...
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="mt-10 space-y-8"></div>
+
+</main>
+
+<script>
+async function runAnalysis() {
+    const resultsDiv = document.getElementById('results');
+    const loadingDiv = document.getElementById('loading');
+
+    resultsDiv.innerHTML = "";
+    loadingDiv.classList.remove('hidden');
+
+    const response = await fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            problem: document.getElementById('problem').value,
+            assumptions: document.getElementById('assumptions').value,
+            framework: document.getElementById('framework').value
+        })
+    });
+
+    const data = await response.json();
+    loadingDiv.classList.add('hidden');
+
+    renderResults(data);
+}
+
+function renderResults(data) {
+    const resultsDiv = document.getElementById('results');
+
+    if (data.error) {
+        resultsDiv.innerHTML = `<div class="text-red-600">${data.error}</div>`;
+        return;
+    }
+
+    resultsDiv.innerHTML = `
+        <div>
+            <h3 class="text-xl font-bold mb-2">Structured Problem</h3>
+            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.structured_problem, null, 2)}</pre>
+        </div>
+
+        <div>
+            <h3 class="text-xl font-bold mb-2">Selected Framework</h3>
+            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.selected_framework, null, 2)}</pre>
+        </div>
+
+        <div>
+            <h3 class="text-xl font-bold mb-2">Framework Analysis</h3>
+            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.framework_output, null, 2)}</pre>
+        </div>
+
+        <div>
+            <h3 class="text-xl font-bold mb-2">Solution</h3>
+            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.solution, null, 2)}</pre>
+        </div>
+
+        <div>
+            <h3 class="text-xl font-bold mb-2">Execution Plan</h3>
+            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.execution_plan, null, 2)}</pre>
+        </div>
+    `;
+}
+</script>
+
 </body>
 </html>
