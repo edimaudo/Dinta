@@ -5,7 +5,6 @@ A decision intelligence tool powered by IBM watsonx Orchestrate that applies dec
 ## Project Structure
 ```
 dinta
-├── app.py
 ├── api/
 │   ├── index.py            # Main FastAPI application entry point
 │   ├── models.py           # Pydantic data models (Shared schema)
