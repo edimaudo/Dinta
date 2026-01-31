@@ -40,12 +40,40 @@ class FiveWhys(DecisionFramework):
             "Level 5 (Root Cause)": ["Alignment between sales targets and engineering health is missing"]
         }
 
+class CostBenefitAnalysis(DecisionFramework):
+    def analyze(self, problem: str, assumptions: str) -> Dict[str, List[str]]:
+        # In a real app, this logic would parse 'problem' to identify specific costs/benefits.
+        # For the hackathon, we provide a robust, structured template.
+        return {
+            "Direct Costs": [
+                "Initial implementation & technology acquisition",
+                "Labor and specialized personnel expenses",
+                "Software licensing or raw material costs"
+            ],
+            "Indirect & Intangible Costs": [
+                "Opportunity cost of diverted resources",
+                "Potential productivity dip during transition",
+                "Maintenance and ongoing operational overhead"
+            ],
+            "Tangible Benefits (ROI)": [
+                "Expected revenue increase or cost savings",
+                "Reduction in manual error rates",
+                "Faster time-to-market for core services"
+            ],
+            "Strategic & Intangible Benefits": [
+                "Improved brand reputation and trust",
+                "Enhanced employee morale and retention",
+                "Increased agility to respond to market shifts"
+            ]
+        }
+
 # --- 3. The Framework Registry ---
 
 FRAMEWORK_REGISTRY = {
     "SWOT": SWOTAnalysis(),
     "RICE": RICEScoring(),
-    "5WHYS": FiveWhys()
+    "5WHYS": FiveWhys(),
+    "COST_BENEFIT": CostBenefitAnalysis() # Ensure this key matches your HTML value!
 }
 
 # --- 4. The Core Engine ---
