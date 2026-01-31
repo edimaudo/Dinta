@@ -1,0 +1,104 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Dinta Decision Intelligence Engine",
+    "version": "1.0.0",
+    "description": "API for validating problem statements, choosing decision frameworks, and generating strategic execution plans."
+  },
+  "servers": [
+    {
+      "url": "https://dinta-azure.vercel.app",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/api/analyze": {
+      "post": {
+        "summary": "Analyze a business problem and generate a solution",
+        "description": "Takes a problem and assumptions, validates them, and returns a structured plan using a specific or auto-selected framework.",
+        "operationId": "analyzeProblem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful strategy generation",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserInput": {
+        "type": "object",
+        "required": ["problem"],
+        "properties": {
+          "problem": {
+            "type": "string",
+            "title": "Problem Statement",
+            "description": "The detailed challenge or decision the user needs help with."
+          },
+          "assumptions": {
+            "type": "string",
+            "title": "User Assumptions",
+            "description": "Constraints or known facts (e.g., 'Budget is $10k', 'Team size is 5').",
+            "default": ""
+          },
+          "framework": {
+            "type": "string",
+            "title": "Decision Framework",
+            "description": "Optional: Specific framework to apply (e.g., SWOT, RICE, 5-Whys). Use 'auto' for AI selection.",
+            "default": "auto"
+          }
+        }
+      },
+      "AgentResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "needs_info"],
+            "description": "Indicator if the analysis was successful or if more user input is required."
+          },
+          "selected_framework": {
+            "type": "string",
+            "description": "The framework name that was applied to the problem."
+          },
+          "framework_output": {
+            "type": "object",
+            "description": "The detailed breakdown of the analysis (e.g., the SWOT quadrants).",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "solution": {
+            "type": "string",
+            "description": "The core strategic recommendation."
+          },
+          "execution_plan": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "A step-by-step list of actions to take."
+          },
+          "clarifying_questions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Specific questions to ask the user if the status is 'needs_info'."
+          }
+        }
+      }
+    }
+  }
+}
