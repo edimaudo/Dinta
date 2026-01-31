@@ -4,129 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dinta — Decision Intelligence</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 
 <body class="bg-gray-50 text-gray-900 min-h-screen">
 
-<header class="bg-white border-b">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <h1 class="text-xl font-bold text-[#006adb]">Dinta</h1>
+<header class="bg-white border-b sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="text-xl font-bold text-[#006adb]">Dinta</a>
+        <span class="text-sm text-gray-500">AI Decision Architect</span>
     </div>
 </header>
 
-<main class="max-w-4xl mx-auto px-6 py-12">
+<main class="max-w-4xl mx-auto px-6 py-10">
 
-    <h2 class="text-3xl font-extrabold mb-8">
-        Decision Intelligence
-    </h2>
+    <div id="input-section" class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all">
+        <h2 class="text-2xl font-bold mb-6">Define the Challenge</h2>
+        
+        <div class="mb-5">
+            <label class="block font-semibold mb-2 text-sm text-gray-700">Problem Statement</label>
+            <textarea id="problem" class="w-full border rounded-lg p-4 h-32 focus:ring-2 focus:ring-[#006adb] focus:outline-none transition"
+                placeholder="Describe the decision or problem you are facing..."></textarea>
+        </div>
 
-    <!-- Problem -->
-    <div class="mb-6">
-        <label class="block font-semibold mb-2">Problem Statement</label>
-        <textarea id="problem"
-            class="w-full border rounded-md p-4 h-32"
-            placeholder="Describe the problem you want to solve..."></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block font-semibold mb-2 text-sm text-gray-700">Assumptions (Optional)</label>
+                <textarea id="assumptions" class="w-full border rounded-lg p-3 h-24 focus:ring-2 focus:ring-[#006adb] focus:outline-none"
+                    placeholder="e.g. Budget is under $50k..."></textarea>
+            </div>
+            <div>
+                <label class="block font-semibold mb-2 text-sm text-gray-700">Framework Preference</label>
+                <select id="framework" class="w-full border rounded-lg p-3 h-24 bg-white focus:ring-2 focus:ring-[#006adb] focus:outline-none">
+                    <option value="auto">✨ Auto-Detect (Recommended)</option>
+                    <option value="SWOT">SWOT Analysis</option>
+                    <option value="FIRST_PRINCIPLES">First Principles</option>
+                    <option value="COST_BENEFIT">Cost-Benefit Analysis</option>
+                    <option value="RICE">RICE Scoring (Product)</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="runAnalysis()" id="analyze-btn"
+            class="w-full bg-[#006adb] hover:bg-blue-700 text-white text-lg px-6 py-3 rounded-lg font-semibold transition-colors flex justify-center items-center gap-2">
+            <span>Generate Strategy</span>
+        </button>
     </div>
 
-    <!-- Assumptions -->
-    <div class="mb-6">
-        <label class="block font-semibold mb-2">Assumptions (optional)</label>
-        <textarea id="assumptions"
-            class="w-full border rounded-md p-4 h-24"
-            placeholder="List any assumptions..."></textarea>
+    <div id="loading" class="hidden mt-8 text-center py-12">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#006adb] mx-auto mb-4"></div>
+        <p class="text-gray-500 font-medium">Consulting decision frameworks...</p>
     </div>
 
-    <!-- Framework -->
-    <div class="mb-6">
-        <label class="block font-semibold mb-2">Framework</label>
-        <select id="framework" class="border rounded-md p-2">
-            <option value="auto">Let Dinta choose</option>
-            <option value="SWOT">SWOT</option>
-            <option value="FIRST_PRINCIPLES">First Principles</option>
-            <option value="COST_BENEFIT">Cost Benefit</option>
-        </select>
+    <div id="clarification-section" class="hidden mt-8 bg-amber-50 border border-amber-200 p-6 rounded-xl">
+        <h3 class="text-amber-800 font-bold text-lg mb-2">Wait, I need more info.</h3>
+        <p class="text-amber-700 mb-4">To give you a perfect answer, please answer these specific questions:</p>
+        <div id="questions-list" class="space-y-3 mb-4"></div>
+        <button onclick="scrollToInput()" class="text-amber-900 font-semibold underline">Update Problem Statement</button>
     </div>
 
-    <button onclick="runAnalysis()"
-        class="bg-[#006adb] text-white px-6 py-3 rounded-md font-semibold">
-        Run Analysis
-    </button>
+    <div id="results" class="hidden mt-10 space-y-8 animate-fade-in">
+        
+        <div class="flex justify-between items-end border-b pb-4">
+            <div>
+                <h3 class="text-3xl font-extrabold text-gray-900">Strategic Plan</h3>
+                <p class="text-gray-500 mt-1">Generated using <span id="used-framework" class="font-bold text-[#006adb]"></span></p>
+            </div>
+            <button onclick="document.getElementById('input-section').scrollIntoView({behavior: 'smooth'})" 
+                class="text-sm text-gray-500 hover:text-[#006adb]">Refine / Edit</button>
+        </div>
 
-    <!-- Loading -->
-    <div id="loading" class="hidden mt-6 text-[#006adb] font-semibold">
-        Analyzing with IBM watsonx Orchestrate...
+        <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-3">Diagnosis</h4>
+            <div id="structured-problem" class="prose max-w-none text-gray-800"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-3">Analysis</h4>
+            <div id="framework-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-[#006adb]/5 to-transparent p-6 rounded-xl border border-blue-100">
+            <h4 class="text-sm font-bold text-blue-500 uppercase tracking-wide mb-3">Execution Plan</h4>
+            <ul id="execution-plan" class="space-y-3"></ul>
+        </div>
+
     </div>
-
-    <!-- Results -->
-    <div id="results" class="mt-10 space-y-8"></div>
 
 </main>
 
 <script>
 async function runAnalysis() {
-    const resultsDiv = document.getElementById('results');
-    const loadingDiv = document.getElementById('loading');
+    // Reset UI
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('clarification-section').classList.add('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('analyze-btn').disabled = true;
 
-    resultsDiv.innerHTML = "";
-    loadingDiv.classList.remove('hidden');
-
-    const response = await fetch('/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    try {
+        const payload = {
             problem: document.getElementById('problem').value,
             assumptions: document.getElementById('assumptions').value,
             framework: document.getElementById('framework').value
-        })
+        };
+
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('analyze-btn').disabled = false;
+
+        if (data.status === "needs_info") {
+            renderClarification(data);
+        } else {
+            renderResults(data);
+        }
+
+    } catch (error) {
+        alert("Error connecting to agent: " + error);
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('analyze-btn').disabled = false;
+    }
+}
+
+function renderClarification(data) {
+    const container = document.getElementById('clarification-section');
+    const list = document.getElementById('questions-list');
+    list.innerHTML = "";
+    data.clarifying_questions.forEach(q => {
+        list.innerHTML += `<div class="flex gap-2 items-start"><span class="text-amber-600 font-bold">?</span> <span>${q}</span></div>`;
     });
-
-    const data = await response.json();
-    loadingDiv.classList.add('hidden');
-
-    renderResults(data);
+    container.classList.remove('hidden');
 }
 
 function renderResults(data) {
-    const resultsDiv = document.getElementById('results');
+    const results = document.getElementById('results');
+    
+    // Fill text fields
+    document.getElementById('used-framework').innerText = data.selected_framework;
+    document.getElementById('structured-problem').innerHTML = marked.parse(data.structured_problem);
 
-    if (data.error) {
-        resultsDiv.innerHTML = `<div class="text-red-600">${data.error}</div>`;
-        return;
-    }
+    // Render Grid (Analysis)
+    const grid = document.getElementById('framework-grid');
+    grid.innerHTML = "";
+    Object.entries(data.framework_output).forEach(([key, values]) => {
+        let html = `<div class="bg-gray-50 p-4 rounded-lg"><h5 class="font-bold mb-2 text-gray-700">${key}</h5><ul class="list-disc pl-4 space-y-1 text-sm text-gray-600">`;
+        if(Array.isArray(values)) {
+            values.forEach(v => html += `<li>${v}</li>`);
+        } else {
+            html += `<li>${values}</li>`;
+        }
+        html += `</ul></div>`;
+        grid.innerHTML += html;
+    });
 
-    resultsDiv.innerHTML = `
-        <div>
-            <h3 class="text-xl font-bold mb-2">Structured Problem</h3>
-            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.structured_problem, null, 2)}</pre>
-        </div>
+    // Render Plan
+    const planList = document.getElementById('execution-plan');
+    planList.innerHTML = "";
+    data.execution_plan.forEach((step, index) => {
+        planList.innerHTML += `
+            <li class="flex gap-4 items-start">
+                <div class="bg-white border w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-[#006adb] text-sm shadow-sm">${index + 1}</div>
+                <div class="pt-1 text-gray-800">${step}</div>
+            </li>`;
+    });
 
-        <div>
-            <h3 class="text-xl font-bold mb-2">Selected Framework</h3>
-            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.selected_framework, null, 2)}</pre>
-        </div>
+    results.classList.remove('hidden');
+    results.scrollIntoView({behavior: 'smooth'});
+}
 
-        <div>
-            <h3 class="text-xl font-bold mb-2">Framework Analysis</h3>
-            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.framework_output, null, 2)}</pre>
-        </div>
-
-        <div>
-            <h3 class="text-xl font-bold mb-2">Solution</h3>
-            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.solution, null, 2)}</pre>
-        </div>
-
-        <div>
-            <h3 class="text-xl font-bold mb-2">Execution Plan</h3>
-            <pre class="bg-white border p-4 rounded-md">${JSON.stringify(data.execution_plan, null, 2)}</pre>
-        </div>
-    `;
+function scrollToInput() {
+    document.getElementById('input-section').scrollIntoView({behavior: 'smooth'});
+    document.getElementById('problem').focus();
 }
 </script>
 
