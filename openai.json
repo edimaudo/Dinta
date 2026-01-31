@@ -1,0 +1,64 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Dinta Decision Agent",
+    "version": "2.0.0",
+    "description": " AI Agent that takes a problem, validates it, and generates a structured strategic plan."
+  },
+  "paths": {
+    "/api/analyze": {
+      "post": {
+        "summary": "Analyze Problem",
+        "operationId": "analyze_problem_api_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserInput": {
+        "properties": {
+          "problem": { "type": "string", "title": "Problem" },
+          "assumptions": { "type": "string", "title": "Assumptions", "default": "" },
+          "framework": { "type": "string", "title": "Framework", "default": "auto" }
+        },
+        "type": "object",
+        "required": ["problem"]
+      },
+      "AgentResponse": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "structured_problem": { "type": "string", "title": "Structured Problem" },
+          "selected_framework": { "type": "string", "title": "Selected Framework" },
+          "framework_output": { "type": "object", "title": "Framework Output" },
+          "solution": { "type": "string", "title": "Solution" },
+          "execution_plan": { "type": "array", "items": { "type": "string" }, "title": "Execution Plan" },
+          "clarifying_questions": { "type": "array", "items": { "type": "string" }, "title": "Clarifying Questions" }
+        },
+        "type": "object",
+        "required": ["status"]
+      }
+    }
+  }
+}
