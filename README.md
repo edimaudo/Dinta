@@ -2,47 +2,28 @@
 
 A decision intelligence tool powered by IBM watsonx Orchestrate that applies decision and strategy frameworks to user problems and produces executable plans.
 
-## Implementation
-- **Backend**: Flask (Python)
-- **Frontend**: Native JavaScript and CSS Grid, ensuring a lightweight, secure, and responsive institutional experience.
-- **Agentic Workdlow**: IBM Wastson Orchestrate.
-
 ## Project Structure
 ```
-dinta/
-├── app.py              
-├── requirements.txt  
-├── vercel.json   
-├── README.md                 
-└── templates/
-    ├── index.html
-    ├── app.html
-    ├── 404.html
+dinta
+├── api/
+│   ├── index.py            # Main FastAPI application entry point
+│   ├── models.py           # Pydantic data models (Shared schema)
+│   └── logic.py            # The core "Decision Intelligence" brain
+├── templates/
+│   ├── index.html          # Landing page
+│   └── app.html            # Main application Interface
+├── requirements.txt        # Python dependencies
+├── vercel.json             # Vercel deployment configuration
+└── openapi.json            # (Generated automatically, but good to have a copy)
 ```
 
-## IBM Waston Orchestrate Architecture
-```
-Browser (app.html)
-        ↓
-Flask API (app.py)
-        ↓
-watsonx Orchestrate Workflow (HTTP trigger)
-        ↓
-5 Orchestrate LLM Skills (sequential reasoning)
-        ↓
-watsonx.ai foundation model
-        ↓
-Structured JSON result
-        ↓
-Back to Flask → UI render
-```
+## System Architecture
+The system operates on a "Triangular" flow:
 
-## Installation and Deployment
-### Environmental Setup
-```
-pip install -r requirements.txt
-```
-### Application Launch
-```
-python app.py
-```
+- Frontend (Vercel): Captures user intent and renders the results.
+
+- Middleware/Logic (FastAPI): Acts as the "Guardrail" and "Parser." It ensures the data is clean before the AI sees it and structures the AI's response before the user sees it.
+
+- IBM Orchestrate (The Hub): Manages the AI skills, maintains session context for the "Refinement Phase," and executes the specific decision frameworks.
+
+
