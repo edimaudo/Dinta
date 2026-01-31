@@ -5,6 +5,7 @@ A decision intelligence tool powered by IBM watsonx Orchestrate that applies dec
 ## Project Structure
 ```
 dinta
+├── app.py
 ├── api/
 │   ├── index.py            # Main FastAPI application entry point
 │   ├── models.py           # Pydantic data models (Shared schema)
@@ -14,7 +15,7 @@ dinta
 │   └── app.html            # Main application Interface
 ├── requirements.txt        # Python dependencies
 ├── vercel.json             # Vercel deployment configuration
-└── openapi.json            # (Generated automatically, but good to have a copy)
+└── openapi.json            
 ```
 
 ## System Architecture
