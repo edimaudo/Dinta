@@ -1,24 +1,7 @@
-
 {
-"version": 2,
-"builds": [
-{
-"src": "app.py",
-"use": "@vercel/python",
-"config": {
-"runtime": "python3.11",
-"maxLambdaSize": "15mb",
-"includeFiles": [
-"requirements.txt",
-"templates/**"
-]
-}
-}
-],
-"routes": [
-{
-"src": "/(.*)",
-"dest": "app.py"
-}
-]
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/", "destination": "/api/index.py" },
+    { "source": "/app", "destination": "/api/index.py" }
+  ]
 }
