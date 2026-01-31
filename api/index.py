@@ -1,16 +1,32 @@
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional, Union
+import os
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from .models import UserInput, AgentResponse
+from .logic import run_decision_engine
 
-class UserInput(BaseModel):
-    problem: str
-    assumptions: Optional[str] = ""
-    framework: Optional[str] = "auto"
+app = FastAPI()
 
-class AgentResponse(BaseModel):
-    status: str = Field(..., description="'success' or 'needs_info'")
-    structured_problem: Optional[str] = None
-    selected_framework: Optional[str] = None
-    framework_output: Optional[Dict[str, List[str]]] = None
-    solution: Optional[str] = None
-    execution_plan: Optional[List[str]] = None
-    clarifying_questions: Optional[List[str]] = None
+# IMPORTANT: CORS must be here for IBM Orchestrate to work
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+templates = Jinja2Templates(directory="templates")
+
+# Page Routes (Replaces @app.route from Flask)
+@app.get("/")
+async def serve_home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/app")
+async def serve_app(request: Request):
+    return templates.TemplateResponse("app.html", {"request": request})
+
+# API Route for IBM Orchestrate
+@app.post("/api/analyze", response_model=AgentResponse)
+async def analyze(data: UserInput):
+    return run_decision_engine(data)
