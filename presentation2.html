@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinta Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background-color: #f8fafc; }
+        .slide { display: none; height: 100vh; width: 100vw; transition: opacity 0.3s ease; }
+        .slide.active { display: flex; }
+        .accent-border { border-left: 4px solid #006adb; }
+        .glass-light { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0, 106, 219, 0.1); }
+        .bg-dot-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; }
+    </style>
+</head>
+<body class="text-slate-800 bg-dot-pattern">
+
+    <section id="slide-1" class="slide active flex-col items-center justify-center text-center p-10 bg-white">
+        <div class="mb-8 p-4 rounded-2xl bg-blue-50">
+            <svg class="w-16 h-16 text-[#006adb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+        </div>
+        <h1 class="text-7xl font-extrabold tracking-tighter text-slate-900 mb-2">DINTA</h1>
+        <p class="text-xl text-[#006adb] uppercase tracking-[0.3em] font-bold">Democratizing Smart Decision Making</p>
+        <div class="mt-12 h-1 w-24 bg-[#006adb] mx-auto"></div>
+    </section>
+
+    <section id="slide-2" class="slide flex-col items-center justify-center p-20">
+        <div class="max-w-5xl w-full">
+            <h2 class="text-[#006adb] font-bold text-sm tracking-widest uppercase mb-2">Executive Summary</h2>
+            <h3 class="text-5xl font-bold text-slate-900 mb-12">The Cost of Subjective Strategy</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="glass-light p-10 rounded-2xl shadow-xl shadow-blue-900/5 accent-border bg-white">
+                    <p class="text-2xl leading-relaxed text-slate-700">
+                        Startup Founders and Small business owners suffer from <span class="text-[#006adb] font-bold">"analysis paralysis"</span> due to fluctuating market demands and operational scaling pressures.
+                    </p>
+                </div>
+                <div class="space-y-6 flex flex-col justify-center">
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-white transition shadow-sm">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-[#006adb]"></div>
+                        <p class="text-slate-600">Traditional consulting is <span class="text-slate-900 font-semibold">prohibitively expensive</span>.</p>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-white transition shadow-sm">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-[#006adb]"></div>
+                        <p class="text-slate-600">Static templates are <span class="text-slate-900 font-semibold">too rigid</span> to adapt to specific business nuances.</p>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-white transition shadow-sm">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-[#006adb]"></div>
+                        <p class="text-slate-600">Reliance on <span class="text-slate-900 font-semibold">"gut feel"</span> or informal advice leads to strategic fragility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="slide-3" class="slide flex-col items-center justify-center p-20">
+        <div class="max-w-5xl w-full">
+            <h3 class="text-4xl font-bold text-slate-900 mb-10 text-center">System Architecture</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-xl shadow-md border border-slate-100">
+                    <div class="text-[#006adb] font-bold text-lg mb-4">01. Orchestration</div>
+                    <p class="text-sm text-slate-500 font-medium">IBM watsonx Orchestrate serves as the command center, coordinating intent-based tasks.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-[#006adb]">
+                    <div class="text-[#006adb] font-bold text-lg mb-4">02. Decision Agent</div>
+                    <p class="text-sm text-slate-500 font-medium">The Decision engine acts as a strategic consultant, it can autonomously select a decision framework.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-md border border-slate-100">
+                    <div class="text-[#006adb] font-bold text-lg mb-4">03. Actionable Output</div>
+                    <p class="text-sm text-slate-500 font-medium">Translates solution into clear action plan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="slide-4" class="slide flex-col items-center justify-center p-20 bg-slate-50">
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-[#006adb] font-bold text-sm tracking-widest uppercase mb-2">Platform</h2>
+                <h3 class="text-4xl font-bold text-slate-900 mb-6">User Experience Flow</h3>
+                <div class="space-y-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-[#006adb] text-sm">Natural Language Input</h4>
+                        <p class="text-xs text-slate-500">User describes a messy business challenge.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-[#006adb] text-sm">Adaptive Reasoning</h4>
+                        <p class="text-xs text-slate-500">Agent can scan for keywords to select the right framework.</p>
+                    </div>
+                    <div class="bg-[#006adb] p-4 rounded-xl shadow-md text-white">
+                        <h4 class="font-bold text-sm">Easy to Understand Output</h4>
+                        <p class="text-xs opacity-90">Structured data is provided to the user.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-2 rounded-2xl shadow-2xl border border-slate-200">
+                <img src="https://github.com/edimaudo/Dinta/raw/main/screenshot.png" onerror="this.src='https://placehold.co/600x400/ffffff/006adb?text=Dinta+Platform+Demo'" class="rounded-xl w-full h-auto" alt="Platform Demo">
+            </div>
+        </div>
+    </section>
+
+    <section id="slide-5" class="slide flex-col items-center justify-center text-center p-10 bg-white">
+        <h3 class="text-5xl font-bold text-slate-900 mb-6 tracking-tight">Democratizing Smarter Decision Making</h3>
+        <p class="text-slate-500 max-w-2xl mb-12 text-xl font-medium">Dinta provides a level of structural rigor previously unavailable to small-scale operations.</p>
+        <div class="mt-8 h-1 w-32 bg-[#006adb] mx-auto"></div>
+    </section>
+
+    <div class="fixed bottom-10 right-10 flex items-center gap-4 z-[100] bg-white p-2 rounded-full shadow-2xl border border-slate-100">
+        <button id="prevBtn" onclick="changeSlide(-1)" class="p-3 rounded-full hover:bg-slate-100 transition disabled:opacity-30 disabled:cursor-not-allowed text-slate-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="h-6 w-px bg-slate-200"></div>
+        <span id="slideIndicator" class="text-xs font-bold text-slate-400 tracking-widest px-2">01 / 05</span>
+        <div class="h-6 w-px bg-slate-200"></div>
+        <button id="nextBtn" onclick="changeSlide(1)" class="p-3 rounded-full hover:bg-blue-50 transition disabled:opacity-30 disabled:cursor-not-allowed text-[#006adb]">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5;
+
+        function changeSlide(direction) {
+            const nextSlide = currentSlide + direction;
+            if (nextSlide >= 1 && nextSlide <= totalSlides) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                currentSlide = nextSlide;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // Grey out logic
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+            document.getElementById('slideIndicator').innerText = `0${currentSlide} / 0${totalSlides}`;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") changeSlide(1);
+            if (e.key === "ArrowLeft") changeSlide(-1);
+        });
+
+        // Initialize UI on load
+        updateUI();
+    </script>
+</body>
+</html>
