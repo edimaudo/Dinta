@@ -100,83 +100,90 @@
 
 <script>
 async function runAnalysis() {
-    // Reset UI
-    document.getElementById('results').classList.add('hidden');
-    document.getElementById('clarification-section').classList.add('hidden');
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('analyze-btn').disabled = true;
+    const btn = document.getElementById('analyze-btn');
+    const problemInput = document.getElementById('problem');
+    const frameworkSelect = document.getElementById('framework');
+
+    // 1. Validation: Don't send empty data
+    if (!problemInput.value.trim()) {
+        alert("Please describe your problem first.");
+        return;
+    }
+
+    // 2. UI Reset: Clear old results and show loading state
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+    document.getElementById('solution-text').innerText = "Analyzing...";
+    document.getElementById('execution-steps').innerHTML = "";
+    document.getElementById('framework-grid').innerHTML = "";
 
     try {
-        const payload = {
-            problem: document.getElementById('problem').value,
-            assumptions: document.getElementById('assumptions').value,
-            framework: document.getElementById('framework').value
-        };
-
+        // 3. API Call
         const response = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ 
+                problem: problemInput.value, 
+                framework: frameworkSelect.value 
+            })
         });
 
         const data = await response.json();
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('analyze-btn').disabled = false;
 
-        if (data.status === "needs_info") {
-            renderClarification(data);
-        } else {
+        if (data.status === "success") {
             renderResults(data);
+        } else {
+            alert("Analysis failed: " + (data.clarifying_questions?.[0] || "Unknown error"));
         }
-
-    } catch (error) {
-        alert("Error connecting to agent: " + error);
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('analyze-btn').disabled = false;
+    } catch (err) {
+        console.error("Fetch error:", err);
+        alert("Could not connect to the server.");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Generate Strategy";
     }
 }
 
-function renderClarification(data) {
-    const container = document.getElementById('clarification-section');
-    const list = document.getElementById('questions-list');
-    list.innerHTML = "";
-    data.clarifying_questions.forEach(q => {
-        list.innerHTML += `<div class="flex gap-2 items-start"><span class="text-amber-600 font-bold">?</span> <span>${q}</span></div>`;
-    });
-    container.classList.remove('hidden');
-}
-
 function renderResults(data) {
-    const results = document.getElementById('results');
-    
-    // Fill text fields
-    document.getElementById('used-framework').innerText = data.selected_framework;
-    document.getElementById('structured-problem').innerHTML = marked.parse(data.structured_problem);
+    const results = document.getElementById('results-section');
+    const frameworkGrid = document.getElementById('framework-grid');
+    const planList = document.getElementById('execution-steps');
 
-    // Render Grid (Analysis)
-    const grid = document.getElementById('framework-grid');
-    grid.innerHTML = "";
-    Object.entries(data.framework_output).forEach(([key, values]) => {
-        let html = `<div class="bg-gray-50 p-4 rounded-lg"><h5 class="font-bold mb-2 text-gray-700">${key}</h5><ul class="list-disc pl-4 space-y-1 text-sm text-gray-600">`;
-        if(Array.isArray(values)) {
-            values.forEach(v => html += `<li>${v}</li>`);
-        } else {
-            html += `<li>${values}</li>`;
-        }
-        html += `</ul></div>`;
-        grid.innerHTML += html;
-    });
+    // Update Text Fields
+    document.getElementById('framework-name').innerText = data.selected_framework || "Analysis";
+    document.getElementById('solution-text').innerText = data.solution || "";
 
-    // Render Plan
-    const planList = document.getElementById('execution-plan');
+    // FIX: Add empty string fallback to prevent 'marked()' null error
+    const problemMarkdown = data.structured_problem || "";
+    document.getElementById('structured-problem').innerHTML = marked.parse(problemMarkdown);
+
+    // Build Framework Grid (SWOT/CBA/etc)
+    frameworkGrid.innerHTML = "";
+    if (data.framework_output) {
+        Object.entries(data.framework_output).forEach(([key, values]) => {
+            const card = document.createElement('div');
+            card.className = "bg-gray-50 p-4 rounded-lg border border-gray-100";
+            card.innerHTML = `
+                <h4 class="font-bold text-[#006adb] mb-2 uppercase text-xs tracking-wider">${key}</h4>
+                <ul class="text-sm space-y-2 text-gray-700">
+                    ${values.map(v => `<li>• ${v}</li>`).join('')}
+                </ul>
+            `;
+            frameworkGrid.appendChild(card);
+        });
+    }
+
+    // Build Execution Plan
     planList.innerHTML = "";
-    data.execution_plan.forEach((step, index) => {
-        planList.innerHTML += `
-            <li class="flex gap-4 items-start">
-                <div class="bg-white border w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-[#006adb] text-sm shadow-sm">${index + 1}</div>
-                <div class="pt-1 text-gray-800">${step}</div>
-            </li>`;
-    });
+    if (data.execution_plan) {
+        data.execution_plan.forEach((step, index) => {
+            planList.innerHTML += `
+                <li class="flex gap-4 items-start">
+                    <div class="bg-white border w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-[#006adb] text-sm shadow-sm">${index + 1}</div>
+                    <div class="pt-1 text-gray-800">${step}</div>
+                </li>`;
+        });
+    }
 
     results.classList.remove('hidden');
     results.scrollIntoView({behavior: 'smooth'});
@@ -185,29 +192,6 @@ function renderResults(data) {
 function scrollToInput() {
     document.getElementById('input-section').scrollIntoView({behavior: 'smooth'});
     document.getElementById('problem').focus();
-}
-// fixes issues with resets
-async function generateStrategy() {
-    // 1. CLEAR THE PREVIOUS DATA IMMEDIATELY
-    document.getElementById('solution-text').innerText = "Analyzing...";
-    document.getElementById('execution-steps').innerHTML = ""; 
-    document.getElementById('framework-grid').innerHTML = ""; // Clear the SWOT/RICE grid
-
-    // 2. GATHER NEW DATA
-    const problem = document.getElementById('problem-input').value;
-    const framework = document.getElementById('framework-select').value;
-
-    // 3. TRIGGER THE API CALL
-    const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem, framework })
-    });
-
-    const data = await response.json();
-
-    // 4. RENDER NEW DATA
-    renderResults(data);
 }
 </script>
 
